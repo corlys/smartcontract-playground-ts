@@ -1,19 +1,58 @@
+/* eslint-disable node/no-unsupported-features/es-builtins */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable node/no-missing-import */
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { BigNumber } from "ethers";
+import { CumCoin } from "../typechain/CumCoin";
+import { CumCoin__factory as CumCoinFactory } from "../typechain/factories/CumCoin__factory";
 
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
+describe("CumCoint Testing", () => {
+  let cumCoinContract: CumCoin;
+  beforeEach(async () => {
+    console.log("Deploying Contract ... ");
+    const [A] = await ethers.getSigners();
+    const contractFactory = new CumCoinFactory(A);
+    const deployTx = await contractFactory.deploy();
+    cumCoinContract = await deployTx.deployed();
+    console.log(`Contract Deployed to ${A.address}`);
+  });
 
-    expect(await greeter.greet()).to.equal("Hello, world!");
+  it("A send 10 coins to B", async () => {
+    const [A, B] = await ethers.getSigners();
+    const beforeCoin = await cumCoinContract.balanceOf(A.address);
+    const sendCoinTx = await cumCoinContract.transfer(
+      B.address,
+      BigNumber.from((10 * 10 ** 18).toString())
+    );
+    await sendCoinTx.wait();
+    const afterCoin = await cumCoinContract.balanceOf(A.address);
+    const sentCoint = await cumCoinContract.balanceOf(B.address);
 
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
+    // const fiftyMilCoin = BigInt(`${50000000 * 10 ** 18}`);
+    const tenCoin = BigInt(10 * 10 ** 18);
 
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
+    // expect(beforeCoin.toString()).to.be.eq(fiftyMilCoin.toString());
+    expect(afterCoin.lt(beforeCoin)).to.be.eq(true);
+    expect(sentCoint.toString()).to.be.eq(tenCoin.toString());
+  });
 
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
+  it("We try to listen some events", async () => {
+    // eslint-disable-next-line no-unused-vars
+    const [A, B] = await ethers.getSigners();
+    const sendCoinTx = await cumCoinContract.transfer(
+      B.address,
+      BigNumber.from((10 * 10 ** 18).toString())
+    );
+    // await sendCoinTx.wait();
+    const receipt = await sendCoinTx.wait();
+    console.log(receipt.blockNumber);
+    const filter = cumCoinContract.filters.Transfer();
+    const events = await cumCoinContract.queryFilter(
+      filter,
+      receipt.blockNumber
+    );
+    console.log(events);
+    expect(events).to.be.not.null;
   });
 });
