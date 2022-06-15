@@ -26,7 +26,6 @@ const A_PKEY = process.env.A_PKEY !== undefined ? process.env.A_PKEY : "";
 const B_PKEY = process.env.B_PKEY !== undefined ? process.env.B_PKEY : "";
 const POLYGONSCAN_KEY =
   process.env.POLYGONSCAN_KEY !== undefined ? process.env.POLYGONSCAN_KEY : "";
-console.log(POLYGONSCAN_KEY);
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   defaultNetwork: "mumbai",
@@ -36,6 +35,10 @@ const config: HardhatUserConfig = {
   networks: {
     mumbai: {
       url: process.env.MUMBAI_PROVIDER || "",
+      accounts: [A_PKEY, B_PKEY],
+    },
+    astar: {
+      url: process.env.ASTAR_PROVIDER || "",
       accounts: [A_PKEY, B_PKEY],
     },
   },
