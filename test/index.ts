@@ -15,7 +15,9 @@ describe("CumCoint Testing", () => {
     const contractFactory = new CumCoinFactory(A);
     const deployTx = await contractFactory.deploy();
     cumCoinContract = await deployTx.deployed();
-    console.log(`Contract Deployed to ${A.address}`);
+    console.log(
+      `Contract Deployed by ${A.address} from ${cumCoinContract.address}`
+    );
   });
 
   it("A send 10 coins to B", async () => {

@@ -24,9 +24,12 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 const A_PKEY = process.env.A_PKEY !== undefined ? process.env.A_PKEY : "";
 const B_PKEY = process.env.B_PKEY !== undefined ? process.env.B_PKEY : "";
-
+const POLYGONSCAN_KEY =
+  process.env.POLYGONSCAN_KEY !== undefined ? process.env.POLYGONSCAN_KEY : "";
+console.log(POLYGONSCAN_KEY);
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
+  defaultNetwork: "mumbai",
   mocha: {
     timeout: 10000000,
   },
@@ -41,7 +44,9 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      polygonMumbai: POLYGONSCAN_KEY,
+    },
   },
 };
 
