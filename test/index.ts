@@ -46,13 +46,19 @@ describe("CumCoint Testing", () => {
     );
     // await sendCoinTx.wait();
     const receipt = await sendCoinTx.wait();
-    console.log(receipt.blockNumber);
     const filter = cumCoinContract.filters.Transfer();
     const events = await cumCoinContract.queryFilter(
       filter,
       receipt.blockNumber
     );
-    console.log(events);
-    expect(events).to.be.not.null;
+    const from = events[0].args.from;
+    const to = events[0].args.to;
+    const value = events[0].args.value;
+    console.log(`from : ${from}`);
+    console.log(`to : ${to}`);
+    console.log(`value : ${value}`);
+    expect(value.toString()).to.be.eq(
+      BigNumber.from((10 * 10 ** 18).toString())
+    );
   });
 });
