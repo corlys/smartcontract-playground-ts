@@ -1,4 +1,5 @@
 /* eslint-disable node/no-missing-import */
+import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
 import { EventContract__factory as EventContractFactory } from "../typechain/factories/EventContract__factory";
 
@@ -10,10 +11,10 @@ async function main() {
     // "astar"
   );
   const eventContract = EventContractFactory.connect(
-    "0x18caBa65baFD577C79d4342E4425E1faBE17d278",
+    "0x49C51117bebd57815E79e6e6f6B343e51C8151EE",
     WebSocketProvider
   );
-  const filter = eventContract.filters.TestEvent();
+  const filter = eventContract.filters.TestEvent(null, BigNumber.from(3));
   eventContract.on(filter, (e1, e2, e3) => {
     console.log("ZAPP");
     console.log(e1, e2, e3);
