@@ -16,8 +16,9 @@ async function main() {
   );
   const filter = eventContract.filters.TestEvent(null, BigNumber.from(3));
   eventContract.on(filter, (e1, e2, e3) => {
-    console.log("ZAPP");
-    console.log(e1, e2, e3);
+    console.log(`sender : ${e1}`);
+    console.log(`counter : ${e2}`);
+    console.log(`date : ${new Date(e3.toNumber() * 1000).toJSON()}`);
   });
 }
 
